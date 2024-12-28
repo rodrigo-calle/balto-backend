@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import goalRoutes from "./routes/goalRoutes";
 import weekRoutes from "./routes/weekRoutes";
 import dailyEntryRoutes from "./routes/dailyEntryRoutes";
+import authRoutes from "./routes/authRoutes";
 
 dotenv.config();
 const app = express();
@@ -14,9 +15,10 @@ app.use(express.json());
 app.use("/goals", goalRoutes);
 app.use("/weeks", weekRoutes);
 app.use("/daily-entries", dailyEntryRoutes);
+app.use("/auth", authRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.send("Welcome to Balto!");
 });
 
 export default app;
