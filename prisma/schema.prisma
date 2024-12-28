@@ -1,0 +1,55 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Goal {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  weeks       Week[]
+}
+
+model Week {
+  id               String             @id @default(uuid())
+  goalId           String
+  weekNumber       Int
+  description      String
+  startDate        DateTime
+  endDate          DateTime
+  WeeklyObjectives WeeklyObjectives[]
+  DailyEntry       DailyEntry[]
+  Goal             Goal               @relation(fields: [goalId], references: [id])
+}
+
+model DailyEntry {
+  id                   String                 @id @default(uuid())
+  weekId               String
+  date                 DateTime
+  progress             String
+  notes                String
+  Week                 Week                   @relation(fields: [weekId], references: [id])
+  DailyEntryObjectives DailyEntryObjectives[]
+}
+
+model WeeklyObjectives {
+  id        String @id @default(uuid())
+  weekId    String
+  objective String
+  Week      Week   @relation(fields: [weekId], references: [id])
+}
+
+model DailyEntryObjectives {
+  id          String     @id @default(uuid())
+  dayId       String
+  objective   String
+  description String
+  isCompleted Boolean
+  DailyEntry  DailyEntry @relation(fields: [dayId], references: [id])
+}
