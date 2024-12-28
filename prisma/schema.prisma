@@ -14,6 +14,8 @@ model Goal {
   startDate   DateTime
   endDate     DateTime
   weeks       Week[]
+  User        User?    @relation(fields: [userId], references: [id])
+  userId      String?
 }
 
 model Week {
@@ -26,6 +28,8 @@ model Week {
   WeeklyObjectives WeeklyObjectives[]
   DailyEntry       DailyEntry[]
   Goal             Goal               @relation(fields: [goalId], references: [id])
+  User             User?              @relation(fields: [userId], references: [id])
+  userId           String?
 }
 
 model DailyEntry {
@@ -36,6 +40,8 @@ model DailyEntry {
   notes                String
   Week                 Week                   @relation(fields: [weekId], references: [id])
   DailyEntryObjectives DailyEntryObjectives[]
+  User                 User?                  @relation(fields: [userId], references: [id])
+  userId               String?
 }
 
 model WeeklyObjectives {
@@ -46,17 +52,20 @@ model WeeklyObjectives {
 }
 
 model DailyEntryObjectives {
-  id          String     @id @default(uuid())
-  dayId       String
-  objective   String
-  description String
-  isCompleted Boolean
-  DailyEntry  DailyEntry @relation(fields: [dayId], references: [id])
+  id           String     @id @default(uuid())
+  dailyEntryId String
+  objective    String
+  description  String
+  isCompleted  Boolean
+  DailyEntry   DailyEntry @relation(fields: [dailyEntryId], references: [id])
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique
+  password     String
+  goals        Goal[]
+  weeks        Week[]
+  dailyEntries DailyEntry[]
 }
