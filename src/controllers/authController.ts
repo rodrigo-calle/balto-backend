@@ -77,3 +77,26 @@ export const updatePassword = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to update password" });
   }
 };
+
+export const validateToken = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { password, ...rest } = user;
+    res.status(200).json(rest);
+  } catch (error) {
+    res.status(401).json({ error: "Invalid token" });
+  }
+};
