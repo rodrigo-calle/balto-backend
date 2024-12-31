@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { createGoal, getGoals } from "../controllers/goalController";
+import { createGoal, getGoal, getGoals } from "../controllers/goalController";
 import { isAuthenticated } from "../middleware";
 
 const router = Router();
 
-router.post("/", isAuthenticated, createGoal);
 router.get("/", isAuthenticated, getGoals);
+router.get("/:id", isAuthenticated, getGoal);
+router.post("/", isAuthenticated, createGoal);
 
 export default router;
