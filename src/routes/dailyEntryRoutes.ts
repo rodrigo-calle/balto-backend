@@ -5,12 +5,13 @@ import {
   updateDailyEntry,
   deleteDailyEntry,
 } from "../controllers/dailyEntryController";
+import { isAuthenticated } from "../middleware";
 
 const router = Router();
 
-router.post("/", createDailyEntry);
-router.get("/:weekId", getEntriesByWeek);
-router.put("/:id", updateDailyEntry);
-router.delete("/:id", deleteDailyEntry);
+router.post("/", isAuthenticated, createDailyEntry);
+router.get("/:weekId", isAuthenticated, getEntriesByWeek);
+router.put("/:id", isAuthenticated, updateDailyEntry);
+router.delete("/:id", isAuthenticated, deleteDailyEntry);
 
 export default router;

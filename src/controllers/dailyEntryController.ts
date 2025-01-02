@@ -1,10 +1,23 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma/client";
 
-export const createDailyEntry = async (req: Request, res: Response) => {
+export const createDailyEntry = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
   const { weekId, date, progress, notes } = req.body;
 
   try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
     const entry = await prisma.dailyEntry.create({
       data: {
         weekId,
@@ -19,10 +32,23 @@ export const createDailyEntry = async (req: Request, res: Response) => {
   }
 };
 
-export const getEntriesByWeek = async (req: Request, res: Response) => {
+export const getEntriesByWeek = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
   const { weekId } = req.params;
 
   try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
     const entries = await prisma.dailyEntry.findMany({
       where: { weekId },
     });
@@ -32,11 +58,24 @@ export const getEntriesByWeek = async (req: Request, res: Response) => {
   }
 };
 
-export const updateDailyEntry = async (req: Request, res: Response) => {
+export const updateDailyEntry = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
   const { id } = req.params;
   const { date, progress, notes } = req.body;
 
   try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
     const entry = await prisma.dailyEntry.update({
       where: { id },
       data: {
@@ -51,10 +90,23 @@ export const updateDailyEntry = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteDailyEntry = async (req: Request, res: Response) => {
+export const deleteDailyEntry = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
   const { id } = req.params;
 
   try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
     await prisma.dailyEntry.delete({
       where: { id },
     });
