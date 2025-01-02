@@ -5,6 +5,7 @@ import goalRoutes from "./routes/goalRoutes";
 import weekRoutes from "./routes/weekRoutes";
 import dailyEntryRoutes from "./routes/dailyEntryRoutes";
 import authRoutes from "./routes/authRoutes";
+import weekleObjectiveRoutes from "./routes/weekleObjectivesRoutes";
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.use("/goals", goalRoutes);
 app.use("/weeks", weekRoutes);
 app.use("/daily-entries", dailyEntryRoutes);
 app.use("/auth", authRoutes);
+app.use("/weekle-goals", weekleObjectiveRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to Balto!");
