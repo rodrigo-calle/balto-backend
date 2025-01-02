@@ -20,6 +20,46 @@ export const createWeek = async (req: Request, res: Response) => {
   }
 };
 
+export const getWeek = async (req: Request, res: Response): Promise<any> => {
+  const { id } = req.params;
+
+  try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const week = await prisma.week.findUnique({
+      where: { id },
+      include: {
+        DailyEntry: {
+          select: {
+            DailyEntryObjectives: true,
+            date: true,
+            id: true,
+            progress: true,
+            notes: true,
+          },
+        },
+        WeeklyObjectives: {
+          select: {
+            id: true,
+            objective: true,
+          },
+        },
+      },
+    });
+    res.status(200).json(week);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch week" });
+  }
+};
+
 export const getWeeksByGoal = async (req: Request, res: Response) => {
   const { goalId } = req.params;
 
@@ -59,7 +99,6 @@ export const updateWeek = async (req: Request, res: Response) => {
   }
 };
 
-// Eliminar una semana
 export const deleteWeek = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -70,5 +109,31 @@ export const deleteWeek = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Week deleted successfully" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete week" });
+  }
+};
+
+export const addWeekObjective = async (req: Request, res: Response) => {
+  const { weekId, objective } = req.body;
+
+  try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const weekleObjective = await prisma.weeklyObjectives.create({
+      data: {
+        objective,
+        weekId,
+      },
+    });
+    res.status(200).json(weekleObjective);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to add week objective" });
   }
 };

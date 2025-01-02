@@ -115,6 +115,8 @@ export const getGoal = async (req: Request, res: Response): Promise<any> => {
             description: true,
             startDate: true,
             DailyEntry: true,
+            id: true,
+            goalId: true,
           },
         },
       },
