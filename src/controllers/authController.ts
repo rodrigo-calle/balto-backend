@@ -90,12 +90,14 @@ export const validateToken = async (
       where: { id: req.userId },
     });
 
+    const token = req.headers.authorization?.split(" ")[1];
+
     if (!user) {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
     const { password, ...rest } = user;
-    res.status(200).json(rest);
+    res.status(200).json({ ...rest, token });
   } catch (error) {
     res.status(401).json({ error: "Invalid token" });
   }
