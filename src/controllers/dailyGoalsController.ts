@@ -39,16 +39,12 @@ export const getDailyGoals = async (req: Request, res: Response) => {
 
 export const updateDailyGoals = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { objective, description, isCompleted } = req.body;
+  const dataToUpdate = req.body;
 
   try {
     const dailyGoal = await prisma.dailyEntryObjectives.update({
       where: { id },
-      data: {
-        objective,
-        description,
-        isCompleted,
-      },
+      data: dataToUpdate,
     });
     res.status(200).json(dailyGoal);
   } catch (error) {
