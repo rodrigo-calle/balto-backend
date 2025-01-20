@@ -1,12 +1,43 @@
 import { Request, Response } from "express";
 import { prisma } from "../prisma/client";
 
+export const getWeekleObjective = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  const { id } = req.params;
+
+  try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const weekleObjective = await prisma.weeklyObjectives.findUnique({
+      where: { id },
+    });
+
+    if (!weekleObjective) {
+      return res.status(404).json({ error: "Week objective not found" });
+    }
+
+    res.status(200).json(weekleObjective);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch week objective" });
+  }
+};
+
 export const createWeekObjective = async (
   req: Request,
   res: Response
 ): Promise<any> => {
   const { weekId, objective } = req.body;
-  console.log({ weekId, objective });
   try {
     if (!("userId" in req && typeof req.userId === "string")) {
       return res.status(401).json({ error: "Unauthorized" });
