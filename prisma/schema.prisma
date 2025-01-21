@@ -37,7 +37,7 @@ model DailyEntry {
   weekId               String
   date                 DateTime
   progress             String
-  notes                String
+  notes                Json                   @default("[]")
   Week                 Week                   @relation(fields: [weekId], references: [id])
   DailyEntryObjectives DailyEntryObjectives[]
   User                 User?                  @relation(fields: [userId], references: [id])

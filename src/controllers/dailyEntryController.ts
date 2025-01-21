@@ -32,6 +32,32 @@ export const createDailyEntry = async (
   }
 };
 
+export const getDailyEntry = async (
+  req: Request,
+  res: Response
+): Promise<any> => {
+  const { id } = req.params;
+
+  try {
+    if (!("userId" in req && typeof req.userId === "string")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const user = await prisma.user.findUnique({
+      where: { id: req.userId },
+    });
+
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const entry = await prisma.dailyEntry.findUnique({
+      where: { id },
+    });
+    res.status(200).json(entry);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch daily entry" });
+  }
+};
+
 export const getEntriesByWeek = async (
   req: Request,
   res: Response
@@ -79,13 +105,14 @@ export const updateDailyEntry = async (
     const entry = await prisma.dailyEntry.update({
       where: { id },
       data: {
-        date: new Date(date),
+        date: date ? new Date(date) : undefined,
         progress,
         notes,
       },
     });
     res.status(200).json(entry);
   } catch (error) {
+    console.log({ error });
     res.status(500).json({ error: "Failed to update daily entry" });
   }
 };
